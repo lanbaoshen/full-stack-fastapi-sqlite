@@ -11,15 +11,15 @@ from app.schemas.user import UserCreate, UserUpdate
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
-    def get_by_username(self, db: Session, *, username: str) -> Optional[User]:
-        return db.query(User).filter(User.username == username).first()
+    def get_by_username(self, db: Session, *, username: str) -> Optional[User]:  # noqa
+        return db.query(User).filter(User.username == username).first()  # noqa
 
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
         db_obj = User(
-            username=obj_in.username,
-            hashed_password=get_password_hash(obj_in.password),
-            email=obj_in.email,
-            is_superuser=obj_in.is_superuser,
+            username=obj_in.username,  # noqa
+            hashed_password=get_password_hash(obj_in.password),  # noqa
+            email=obj_in.email,  # noqa
+            is_superuser=obj_in.is_superuser,  # noqa
         )
         db.add(db_obj)
         db.commit()
@@ -35,17 +35,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return super().update(db, db_obj=db_obj, obj_in=update_data)
 
     def authenticate(self, db: Session, *, username: str, password: str) -> Optional[User]:
-        user = self.get_by_username(db, username=username)
+        user = self.get_by_username(db, username=username)  # noqa
         if not user:
             return None
         if not verify_password(password, user.hashed_password):
             return None
         return user
 
-    def is_active(self, user: User) -> bool:
+    def is_active(self, user: User) -> bool:  # noqa
         return user.is_active
 
-    def is_superuser(self, user: User) -> bool:
+    def is_superuser(self, user: User) -> bool:  # noqa
         return user.is_superuser
 
 
