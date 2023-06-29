@@ -15,7 +15,6 @@ class ItemBase(BaseModel):
 # Properties to receive via API on creation
 class ItemCreate(ItemBase):
     title: str
-    owner_id: int
 
 
 # Properties to receive via API on update
