@@ -2,9 +2,9 @@
 # @Create: 2023/6/28 21:30
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
+from app import schemas
+from app import crud
 from app.core.config import settings
-from app.db import base  # noqa: F401
 from app.db.base_class import Base
 from app.db.session import engine
 

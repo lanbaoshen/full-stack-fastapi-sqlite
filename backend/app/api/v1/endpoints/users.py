@@ -7,10 +7,9 @@ from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
 
-from app import crud, models, schemas
+from app import schemas
+from app import models, crud
 from app.api import deps
-from app.core.config import settings
-
 
 router = APIRouter()
 
@@ -54,7 +53,6 @@ def update_user_me(
         *,
         db: Session = Depends(deps.get_db),
         password: str = Body(None),
-        username: str = Body(None),
         email: EmailStr = Body(None),
         current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
@@ -65,8 +63,6 @@ def update_user_me(
     user_in = schemas.UserUpdate(**current_user_data)
     if password is not None:
         user_in.password = password
-    if username is not None:
-        user_in.username = username
     if email is not None:
         user_in.email = email
     user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
@@ -100,25 +96,4 @@ def read_user_by_id(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="The user doesn't have enough privileges"
         )
-    return user
-
-
-@router.put("/{user_id}", response_model=schemas.User)
-def update_user(
-        *,
-        db: Session = Depends(deps.get_db),
-        user_id: int,
-        user_in: schemas.UserUpdate,
-        current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Update a user.
-    """
-    user = crud.user.get(db, id=user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="The user with this username does not exist in the system",
-        )
-    user = crud.user.update(db, db_obj=user, obj_in=user_in)
     return user
