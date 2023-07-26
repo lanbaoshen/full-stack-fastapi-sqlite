@@ -4,7 +4,6 @@ from typing import Any, List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
 
 from app import schemas
@@ -53,7 +52,6 @@ def update_user_me(
         *,
         db: Session = Depends(deps.get_db),
         password: str = Body(None),
-        email: EmailStr = Body(None),
         current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -63,8 +61,6 @@ def update_user_me(
     user_in = schemas.UserUpdate(**current_user_data)
     if password is not None:
         user_in.password = password
-    if email is not None:
-        user_in.email = email
     user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
     return user
 

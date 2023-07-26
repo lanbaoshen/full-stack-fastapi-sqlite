@@ -2,13 +2,12 @@
 # @Create: 2023/6/28 21:56
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 # Shared properties
 class UserBase(BaseModel):
     username: Optional[str] = None
-    email: Optional[EmailStr] = None
     is_active: Optional[bool] = True
     is_superuser: bool = False
 
